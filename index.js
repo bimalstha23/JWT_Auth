@@ -1,10 +1,10 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const { findOne, getMaxListeners } = require("./model/userS");
-// const bcrypt = require("bcryptjs");
 const app = express();
 require("./Database");
 const user = require("./model/userS");
+const auth = require("./auth");
 app.use(express.json());
 let port = process.env.PORT || 8000;
 
@@ -38,7 +38,7 @@ app.post("/register", async (req, res) => {
         );
         User.token = token;
         res.status(200).json(User);
-        // res.status(400).send("Invalid Credentials");
+        
     } catch (err) {
         console.log(err);
     }
@@ -47,7 +47,6 @@ app.post("/register", async (req, res) => {
 
 app.post("/login", async (req,res) => {
     try {
-        
         const { email, password } = req.body;
         if (!(email && password)) {
             res.send("username and password is required");
@@ -64,13 +63,16 @@ app.post("/login", async (req,res) => {
             );
             User.token = token;
             res.status(200).json(User);
-
         }
         res.status(400).send("Invalid Credentials");
 
     } catch (err) {
         console.log(err);
     }
+})
+
+app.post("/access",auth ,(req,res) =>{
+    res.status(200).send("success");
 })
 app.listen(port, () => {
     console.log(`Server Running at Port: ${port}`);
